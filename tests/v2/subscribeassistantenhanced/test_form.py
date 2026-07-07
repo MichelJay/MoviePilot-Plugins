@@ -50,11 +50,11 @@ class TestBuildForm:
         for key in PluginConfig({}).declared_keys():
             assert key in model, f"表单 model 缺少配置键 {key}"
 
-    def test_six_tabs(self):
-        """配置表单使用 6 个 Tab；顶部 BETA 提示不改变 Tab 数量。"""
+    def test_seven_tabs(self):
+        """配置表单使用 7 个 Tab（含搜索诊断）；顶部 BETA 提示不改变 Tab 数量。"""
         conf, _model = build_form()
         assert conf[3]["component"] == "VTabs"
-        assert len(conf[3]["content"]) == 6
+        assert len(conf[3]["content"]) == 7
 
     def test_beta_alert_precedes_form_controls(self):
         """BETA 风险提示固定显示在开关、周期和分页配置之前。"""
@@ -148,8 +148,8 @@ def test_tabs_renders_vtabs_and_vwindow():
     assert out[1]["content"][0]["component"] == "VWindowItem"
 
 
-def test_form_has_top_switches_periods_and_six_tabs():
-    """配置布局：顶部开关行 + 公共周期行 + 6 个 Tab；关键新参数可编辑；多选控件存在。"""
+def test_form_has_top_switches_periods_and_seven_tabs():
+    """配置布局：顶部开关行 + 公共周期行 + 7 个 Tab；关键新参数可编辑；多选控件存在。"""
     import json
     conf, model = build_form()
     flat = json.dumps(conf, ensure_ascii=False)
@@ -160,8 +160,8 @@ def test_form_has_top_switches_periods_and_six_tabs():
     for key in ("download_check_interval_minutes", "meta_check_interval_hours",
                 "auto_check_interval_minutes", "best_version_cron"):
         assert f'"{key}"' in flat
-    # 6 个 Tab + VTabs/VWindow 绑定
-    assert flat.count('"VTab"') == 6
+    # 7 个 Tab + VTabs/VWindow 绑定
+    assert flat.count('"VTab"') == 7
     assert '"_tab"' in flat
     # 关键新参数可编辑
     for key in ("best_version_type", "no_download_actions", "movie_air_pause_days",
@@ -183,7 +183,7 @@ def test_recognition_guard_tab_and_controls_are_rendered():
     conf, model = build_form()
     flat = json.dumps(conf, ensure_ascii=False)
 
-    assert flat.count('"VTab"') == 6
+    assert flat.count('"VTab"') == 7
     assert "识别增强" in flat
     for key in (
         "recognition_guard_mode",
