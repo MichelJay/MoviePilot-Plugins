@@ -1,0 +1,25 @@
+{
+  "name": "moviepilot-plugin-subscribeassistantenhanced",
+  "private": true,
+  "version": "0.5.13",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run --root ../.. ../../tests/v2/subscribeassistantenhanced/frontend",
+    "typecheck": "vue-tsc --noEmit",
+    "verify:config": "node scripts/verify-config-contract.mjs"
+  },
+  "dependencies": {
+    "vue": "^3.5.13",
+    "vuetify": "3.7.3"
+  },
+  "devDependencies": {
+    "@originjs/vite-plugin-federation": "^1.4.1",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/compiler-sfc": "^3.5.13",
+    "typescript": "^5.0.4",
+    "vite": "^5.4.11",
+    "vitest": "^3.2.4",
+    "vue-tsc": "^2.0.10"
+  }
+}

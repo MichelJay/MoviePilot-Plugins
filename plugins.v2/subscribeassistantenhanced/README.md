@@ -95,7 +95,7 @@
 | 立即运行一次 | date（一次性） | 保存后延迟约 3 秒 | 串行执行元数据检查、下载任务检查、洗版订阅检查和通用巡检；启用「自动纠错」时同时执行自动纠错；仅勾选「立即运行一次」时注册 |
 | 元数据检查 | interval | 由「元数据检查周期（小时）」决定，默认 3 小时 | 复核活动订阅元数据，处理上映前 / 播出间隔暂停的双向恢复，以及剧集待定进入 / 退出 |
 | 下载任务检查 | interval | 由「下载检查周期（分钟）」决定，默认 10 分钟 | 定时检查下载任务状态；启用「自动待定下载中订阅」或「下载超时自动删除」时注册 |
-| 洗版订阅检查 | cron | 由「洗版检查周期」决定，默认 `0 15 * * *` | 兜底推进分集转全集，并处理电影 / 剧集独立洗版时限；仅「洗版类型」不是关闭时注册 |
+| 洗版订阅检查 | cron | 由「洗版检查周期」决定，默认 `0 15 * * *` | 兜底推进分集转全集，并处理电影 / 剧集独立洗版时限；仅「洗版类型」不是关闭且「洗版检查周期」非空时注册 |
 | 自动纠错 | interval | 由「自动纠错间隔（小时）」决定，默认 12 小时 | 复查完成快照中的总集数，发现 TMDB 增集后自动重建订阅；仅启用「自动纠错」时注册 |
 | 通用巡检 | interval | 由「通用巡检周期（分钟）」决定，默认 30 分钟 | 依次执行待定释放、待定状态一致性检查、无下载处理、暂停订阅低频补搜、无进展诊断、站点证据采样、删除记录清理、完成快照清理和订阅清理事务清理；各子任务互不阻断 |
 
@@ -104,9 +104,11 @@
 | 类型 | 标识 | 说明 |
 | --- | --- | --- |
 | 命令 | `/subscribe_toggle` | 切换订阅启用 / 禁用状态；参数为订阅 ID 或完整订阅名，命中多个同名订阅时会返回 ID 列表并提示带 ID 重试 |
-| API | `GET /api/v1/plugin/SubscribeAssistantEnhanced/summary` | 返回各功能启用状态、待定数量和记录中的下载任务数量；需要 MoviePilot 插件 API 鉴权，插件 ID 按 `SubscribeAssistantEnhanced` 使用 |
+| API | `GET /api/v1/plugin/SubscribeAssistantEnhanced/summary` | 返回各功能启用状态、待定数量和记录中的下载任务数量；配置页通过登录态读取该粗粒度概况，不返回配置明细、路径、站点凭据或日志内容 |
 
 ## 配置说明
+
+> 新版配置页使用 MoviePilot Vue 联邦组件渲染，外观跟随主程序主题、圆角、阴影和透明主题设置；配置字段和默认值仍以本表为准。
 
 看不懂的配置项可跳到下方的「深入说明」对照查看；不在「深入说明」里的项一般按默认值即可。
 
@@ -137,7 +139,6 @@
 | 下载超时自动删除 | `download_monitor_enabled` | bool | `true` | 订阅下载超时将自动删除种子 | 关闭后不处理超时、Tracker 和手动删种；下载待定仍可释放 |
 | 监听手动删除种子 | `manual_delete_listen` | bool | `true` | 监听下载器侧手动删种 | 连续确认种子不存在后才按手动删除处理 |
 | 监听Tracker响应关键字 | `tracker_response_listen` | bool | `true` | Tracker 返回内容包含关键字时删种 | 关键字来自「Tracker响应关键字」 |
-| 打开Tracker配置窗口 | `open_tracker_dialog` | bool | `false` | 打开 Tracker 关键字弹窗 | 仅控制表单弹窗，不参与业务逻辑 |
 | 删除后触发搜索补全 | `auto_search_when_delete` | bool | `true` | 删种后触发订阅补搜 | 关闭后只记录删除并解除下载待定 |
 | 跳过近期删除资源 | `skip_deletion` | bool | `true` | 资源选择时跳过近期删除资源 | 内部按资源删除指纹匹配 |
 | 下载超时时间（分钟） | `download_timeout_minutes` | int（分钟） | `120` | 进度观察窗口长度 | 不是总下载时长上限 |
@@ -225,7 +226,7 @@
 | 识别增强通知限频（秒） | `recognition_guard_notify_interval` | int | `3600` | 同订阅、同动作、同原因的通知限频 | 最小 60 秒 |
 | 识别增强二次识别 | `recognition_guard_tmdb_recheck_mode` | enum | `balanced_strict` | 控制是否对候选做二次识别复核 | 可选 `off` / `all` / `strict` / `balanced_strict` |
 | 识别增强缓存大小 | `recognition_guard_cache_maxsize` | int | `100000` | 二次识别结果缓存数量 | 最小 100 条 |
-| 识别增强自定义策略 | `recognition_guard_custom_config` | YAML | 内置说明模板 | 覆盖动作、空候选保护和关键词分组 | 支持 actions / empty_pool / keywords |
+| 自定义识别规则 | `recognition_guard_custom_config` | YAML | 内置说明模板 | 覆盖动作、空候选保护和关键词分组 | 支持 actions / empty_pool / keywords |
 
 ## 深入说明
 

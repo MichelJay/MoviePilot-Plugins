@@ -77,7 +77,8 @@ class SubscribeAssistantEnhanced(_PluginBase):
     """订阅助手增强版——插件入口。
 
     生命周期：init_plugin → 事件注册 → 定时任务 → stop_service。
-    配置表单由 get_form 提供；运行概况由日志和 summary API 提供。
+    配置界面由 Vue 联邦 Config 渲染，get_form 提供初始模型与默认值；
+    运行概况由日志和只读 summary API 提供。
     继承 _PluginBase 以获得真实数据层（get_data/save_data）、事件管理器与消息能力。
     """
 
@@ -188,14 +189,15 @@ class SubscribeAssistantEnhanced(_PluginBase):
         """规范化需要持久安全默认值的配置，避免旧空值覆盖表单默认 model。"""
         raw = dict(config or {})
         changed = False
-        forbidden_recognition_keys = {
+        retired_config_keys = {
             "recognition_guard_enabled",
             "recognition_guard_active",
             "recognition_guard_keyword_config",
             "recognition_guard_target_mode",
             "recognition_guard_missing_year_policy",
+            "open_tracker_dialog",
         }
-        for key in forbidden_recognition_keys:
+        for key in retired_config_keys:
             if key in raw:
                 raw.pop(key, None)
                 changed = True
@@ -1247,6 +1249,7 @@ class SubscribeAssistantEnhanced(_PluginBase):
             "path": "/summary",
             "endpoint": self._api_summary,
             "methods": ["GET"],
+            "auth": "bear",
             "summary": "订阅助手（增强版）概览",
             "description": "返回各业务域启用状态与待定/监控计数",
         }]
@@ -1274,8 +1277,13 @@ class SubscribeAssistantEnhanced(_PluginBase):
             "monitored_torrents": len(torrents),
         }
 
+    @staticmethod
+    def get_render_mode() -> Tuple[str, str]:
+        """使用 Vue 联邦组件渲染配置页，构建产物随插件发布。"""
+        return "vue", "dist/assets"
+
     def get_form(self) -> Tuple[List[dict], Dict[str, Any]]:
-        """返回完整配置表单（Vuetify schema 按 6 个功能 Tab 展示）与默认数据。"""
+        """返回宿主配置接口需要的表单结构和默认模型，Vue Config 使用默认模型初始化。"""
         from .form import build_form
         return build_form()
 
