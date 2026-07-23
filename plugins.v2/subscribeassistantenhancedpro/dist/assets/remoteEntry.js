@@ -3,7 +3,7 @@ const currentImports = {};
       let moduleMap = {
 "./Config":()=>{
       dynamicLoadingCss(["__federation_expose_Config-Ba_bxu1-.css"], false, './Config');
-      return __federation_import('./__federation_expose_Config-B21k7_kx.js').then(module =>Object.keys(module).every(item => exportSet.has(item)) ? () => module.default : () => module)},};
+      return __federation_import('./__federation_expose_Config-0fxSa2ze.js').then(module =>Object.keys(module).every(item => exportSet.has(item)) ? () => module.default : () => module)},};
       const seen = {};
       const dynamicLoadingCss = (cssFilePaths, dontAppendStylesToHead, exposeItemName) => {
         const metaUrl = import.meta.url;
@@ -43,7 +43,7 @@ const currentImports = {};
          }
 
           if (dontAppendStylesToHead) {
-            const key = 'css__SubscribeAssistantEnhancedPro__' + exposeItemName;
+            const key = 'css__subscribeassistantenhancedpro__' + exposeItemName;
             window[key] = window[key] || [];
             window[key].push(href);
             return;

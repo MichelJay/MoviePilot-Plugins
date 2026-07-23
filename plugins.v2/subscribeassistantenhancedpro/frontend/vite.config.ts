@@ -8,7 +8,7 @@ import { defineConfig, normalizePath, type Plugin } from 'vite'
 import { configDefaults } from 'vitest/config'
 
 const TEST_ROOT = normalizePath(fileURLToPath(
-  new URL('../../../tests/v2/SubscribeAssistantEnhancedPro/frontend', import.meta.url),
+  new URL('../../../tests/v2/subscribeassistantenhancedpro/frontend', import.meta.url),
 ))
 const REPOSITORY_ROOT = normalizePath(fileURLToPath(new URL('../../..', import.meta.url)))
 
@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
   if (!isTestMode(mode)) {
     plugins.push(
       federation({
-        name: 'SubscribeAssistantEnhancedPro',
+        name: 'subscribeassistantenhancedpro',
         filename: 'remoteEntry.js',
         exposes: {
           './Config': './src/components/Config.vue',

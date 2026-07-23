@@ -62,7 +62,7 @@ def build_frontend(plugin_dir):
 
 def main():
     parser = argparse.ArgumentParser(description="打包 MoviePilot 插件")
-    parser.add_argument("--plugin", default="SubscribeAssistantEnhancedPro", help="插件名称")
+    parser.add_argument("--plugin", default="subscribeassistantenhancedpro", help="插件名称")
     parser.add_argument("--skip-frontend", action="store_true", help="跳过前端构建")
     args = parser.parse_args()
     
