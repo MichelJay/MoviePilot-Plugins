@@ -73,7 +73,7 @@ def main():
         print(f"错误：插件目录不存在: {plugin_dir}")
         sys.exit(1)
     
-    version = "0.6.10"
+    version = "0.6.11"
     output_dir = "output"
     os.makedirs(output_dir, exist_ok=True)
     
