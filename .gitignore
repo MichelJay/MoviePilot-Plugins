@@ -134,6 +134,9 @@ venv.bak/
 # Local linked worktrees
 .worktrees/
 
+# Plugin packaging output
+output/
+
 # Node dependencies for plugin frontend builds
 node_modules/
 
@@ -169,7 +172,7 @@ cython_debug/
 .idea/
 .vscode/
 
-!plugins.v2/subscribeassistantenhanced/frontend/dist/
-plugins.v2/subscribeassistantenhanced/frontend/dist/*
-!plugins.v2/subscribeassistantenhanced/frontend/dist/assets/
-!plugins.v2/subscribeassistantenhanced/frontend/dist/assets/**
+!plugins.v2/SubscribeAssistantEnhancedPro/dist/
+plugins.v2/SubscribeAssistantEnhancedPro/dist/*
+!plugins.v2/SubscribeAssistantEnhancedPro/dist/assets/
+!plugins.v2/SubscribeAssistantEnhancedPro/dist/assets/**
