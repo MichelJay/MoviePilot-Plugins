@@ -116,7 +116,7 @@
 | 类型 | 标识 | 说明 |
 | --- | --- | --- |
 | 命令 | `/subscribe_toggle` | 切换订阅启用 / 禁用状态；参数为订阅 ID 或完整订阅名，命中多个同名订阅时会返回 ID 列表并提示带 ID 重试 |
-| API | `GET /api/v1/plugin/SubscribeAssistantEnhanced/summary` | 返回各功能启用状态、待定数量和记录中的下载任务数量；配置页通过登录态读取该粗粒度概况，不返回配置明细、路径、站点凭据或日志内容 |
+| API | `GET /api/v1/plugin/SubscribeAssistantEnhancedPro/summary` | 返回各功能启用状态、待定数量和记录中的下载任务数量；配置页通过登录态读取该粗粒度概况，不返回配置明细、路径、站点凭据或日志内容 |
 
 ## 配置说明
 

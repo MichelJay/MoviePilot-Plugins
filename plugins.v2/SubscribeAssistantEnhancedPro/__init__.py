@@ -72,7 +72,7 @@ from .shared.log import detail, truncate_log_value
 from .shared.subscribe import format_subscribe
 
 
-class SubscribeAssistantEnhanced(_PluginBase):
+class SubscribeAssistantEnhancedPro(_PluginBase):
     """订阅助手增强版——插件入口。
 
     生命周期：init_plugin → 事件注册 → 定时任务 → stop_service。
@@ -1392,12 +1392,12 @@ class SubscribeAssistantEnhanced(_PluginBase):
         chain = TorrentsChain()
         helper = getattr(chain, "get_subscribe_cache_candidates", None)
         if not callable(helper):
-            if not SubscribeAssistantEnhanced._site_cache_candidate_helper_warned:
+            if not SubscribeAssistantEnhancedPro._site_cache_candidate_helper_warned:
                 logger.warning(
                     "信号引擎(S)：当前 MoviePilot 主程序缺少站点缓存候选读取能力，"
                     "跳过站点证据扫描；请升级主程序后再启用站点证据"
                 )
-                SubscribeAssistantEnhanced._site_cache_candidate_helper_warned = True
+                SubscribeAssistantEnhancedPro._site_cache_candidate_helper_warned = True
             return []
         return helper(subscribe, **kwargs)
 

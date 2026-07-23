@@ -25,7 +25,7 @@ export async function loadSummary(api?: PluginApi): Promise<SummaryPayload | nul
   try {
     return await api.get<SummaryPayload>('plugin/SubscribeAssistantEnhancedPro/summary')
   } catch {
-    console.warn('[SubscribeAssistantEnhanced] summary unavailable')
+    console.warn('[SubscribeAssistantEnhancedPro] summary unavailable')
     return null
   }
 }
@@ -36,7 +36,7 @@ export async function loadDownloaders(api?: PluginApi): Promise<DownloaderOption
   try {
     return await api.get<DownloaderOption[]>('plugin/SubscribeAssistantEnhancedPro/downloaders')
   } catch {
-    console.warn('[SubscribeAssistantEnhanced] downloaders unavailable')
+    console.warn('[SubscribeAssistantEnhancedPro] downloaders unavailable')
     return null
   }
 }
