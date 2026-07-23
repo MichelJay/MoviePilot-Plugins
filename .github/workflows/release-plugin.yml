@@ -1,0 +1,116 @@
+name: Release Plugin
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.v2.json'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install frontend dependencies
+        working-directory: plugins.v2/subscribeassistantenhancedpro/frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: plugins.v2/subscribeassistantenhancedpro/frontend
+        run: yarn build
+
+      - name: Read version from package.v2.json
+        id: get_version
+        run: |
+          VERSION=$(jq -r '.subscribeassistantenhancedpro.version' package.v2.json)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=subscribeassistantenhancedpro_v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Package plugin
+        id: package
+        run: |
+          PLUGIN_NAME="subscribeassistantenhancedpro"
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          PLUGIN_DIR="plugins.v2/$PLUGIN_NAME"
+          OUTPUT_DIR="output"
+          ZIP_PATH="$OUTPUT_DIR/${PLUGIN_NAME}_${VERSION}.zip"
+          
+          mkdir -p "$OUTPUT_DIR"
+          
+          if [ -f "$ZIP_PATH" ]; then
+            rm "$ZIP_PATH"
+          fi
+          
+          cd plugins.v2
+          zip -r "../$ZIP_PATH" "$PLUGIN_NAME" \
+            -x "*.pyc" "__pycache__/*" ".git/*" ".DS_Store" \
+            "node_modules/*" ".vscode/*" "*.log" \
+            "frontend/src/*" "frontend/node_modules/*" "frontend/.git/*" \
+            "frontend/package.json" "frontend/package-lock.json" "frontend/yarn.lock" \
+            "frontend/vite.config.ts" "frontend/tsconfig.json" "frontend/README.md" \
+            "frontend/dist/*"
+          cd ..
+          
+          echo "ZIP_PATH=$ZIP_PATH" >> $GITHUB_OUTPUT
+          echo "ZIP_NAME=${PLUGIN_NAME}_${VERSION}.zip" >> $GITHUB_OUTPUT
+
+      - name: Create Git tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { VERSION, TAG_NAME } = process.env;
+            const existingTags = await github.rest.git.listMatchingRefs({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `tags/${TAG_NAME}`
+            });
+            
+            if (existingTags.data.length > 0) {
+              await github.rest.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `tags/${TAG_NAME}`
+              });
+            }
+            
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${TAG_NAME}`,
+              sha: context.sha
+            });
+          env:
+            VERSION: ${{ steps.get_version.outputs.VERSION }}
+            TAG_NAME: ${{ steps.get_version.outputs.TAG_NAME }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.TAG_NAME }}
+          release_name: ${{ steps.get_version.outputs.TAG_NAME }}
+          body: |
+            插件版本 ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.package.outputs.ZIP_PATH }}
+          asset_name: ${{ steps.package.outputs.ZIP_NAME }}
+          asset_content_type: application/zip
